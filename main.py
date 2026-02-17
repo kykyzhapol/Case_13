@@ -1,8 +1,10 @@
 from datetime import timedelta, datetime
 import math
 import random
+from ru_local import *
 
 import support as sup
+
 
 setup_data = sup.setup_data_input()
 analyzing_data = sup.data_for_analyzing()
@@ -66,11 +68,11 @@ def print_pump_status(current_queues, setup_data):
         current_queue_length = current_queues[pump_num][0]
 
         # Create string with fuel grades
-        oils_str = ' '.join([f'АИ-{oil}' for oil in available_oils])
+        oils_str = ' '.join([f'{RU_TRANSLATION_1}-{oil}' for oil in available_oils])
 
         # Create queue indicator
         queue_indicator = '*' * current_queue_length
-        out_str = f'Автомат №{pump_num} максимальная очередь: {max_queue} Марки бензина: {oils_str} ->{queue_indicator}'
+        out_str = f'{RU_TRANSLATION_2}{pump_num} {RU_TRANSLATION_3} {max_queue} {RU_TRANSLATION_4} {oils_str} ->{queue_indicator}'
         print(out_str)
         sup.output_modeling(out_str)
 
@@ -125,7 +127,7 @@ def main() -> None:
                     'departure_time': departure_time
                 })
 
-                out_str = f'\nВ {event_time.strftime('%H:%M')} новый клиент: {event_time.strftime('%H:%M')} АИ-{oil_type} {volume} {car_num + 1} встал в очередь к автомату №{pump_num}'
+                out_str = f'\n{IN} {event_time.strftime('%H:%M')} {RU_TRANSLATION_5_1} {event_time.strftime('%H:%M')} {RU_TRANSLATION_1}-{oil_type} {volume} {car_num + 1} {RU_TRANSLATION_6}{pump_num}'
                 print(out_str)
                 sup.output_modeling(out_str)
                 print_pump_status(current_queues, setup_data)
@@ -135,7 +137,7 @@ def main() -> None:
             else:
                 # Customer leaves
                 rejected_customers += 1
-                out_str = f'\nВ {event_time.strftime('%H:%M')} клиент: {event_time.strftime('%H:%M')} АИ-{oil_type} {volume} {car_num + 1} не смог заправиться (все очереди заняты) и уехал'
+                out_str = f'\n{IN} {event_time.strftime('%H:%M')} {RU_TRANSLATION_5_2} {event_time.strftime('%H:%M')} {RU_TRANSLATION_1}-{oil_type} {volume} {car_num + 1} {RU_TRANSLATION_7}'
                 print(out_str)
                 sup.output_modeling(out_str)
                 print_pump_status(current_queues, setup_data)
@@ -157,27 +159,27 @@ def main() -> None:
                     current_queues[pump_num][2].pop(i)
                     current_queues[pump_num][0] -= 1
                     break
-            out_str = f'\nВ {event_time.strftime('%H:%M')} клиент {prepared_data[car_num][0].strftime('%H:%M')} АИ-{oil_type} {volume} {car_num + 1} заправил свой автомобиль и покинул АЗС'
+            out_str = f'\n{IN} {event_time.strftime('%H:%M')} {RU_TRANSLATION_5_2} {prepared_data[car_num][0].strftime('%H:%M')} {RU_TRANSLATION_1}-{oil_type} {volume} {car_num + 1} {RU_TRANSLATION_8}'
             print(out_str)
             sup.output_modeling(out_str)
             print_pump_status(current_queues, setup_data)
 
     # Display final statistics
     print('\n' + '=' * 50,
-          'ИТОГОВАЯ СТАТИСТИКА ЗА СУТКИ:',
+          f'{RU_TRANSLATION_9}',
           '=' * 50)
-    sup.output_modeling('ИТОГОВАЯ СТАТИСТИКА ЗА СУТКИ:')
+    sup.output_modeling(f'{RU_TRANSLATION_9}')
 
-    out_str = '\nКоличество литров, проданное за сутки по каждой марке бензина:'
+    out_str = f'\n{RU_TRANSLATION_10}'
     print(out_str)
     for oil_type, liters in total_sold.items():
         if liters > 0:
-            out_str = f'АИ-{oil_type}: {liters} л'
+            out_str = f'{RU_TRANSLATION_1}-{oil_type}: {liters} {RU_TRANSLATION_14}'
             print(out_str)
             sup.output_modeling(out_str)
 
-    out_str = (f'\nОбщая сумма продаж за сутки: {total_revenue} руб.'
-               f'\nКоличество клиентов, которые покинули АЗС не заправив автомобиль: {rejected_customers}')
+    out_str = (f'\n{RU_TRANSLATION_11} {total_revenue} {RU_TRANSLATION_13}'
+               f'\n{RU_TRANSLATION_12} {rejected_customers}')
     print(out_str)
     sup.output_modeling(out_str)
 
